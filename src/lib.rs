@@ -1,3 +1,10 @@
+/// Asserts that `actual` matches the text-file snapshot at `snapshot_path`. If
+/// there is a diff the function will panic with a helpful diff that shows what
+/// changed.
+///
+/// If the env var `ASSERT_OR_BLESS` is set to `bless` then `actual` will be
+/// written to the snapshot file at `snapshot_path` instead of asserting that it
+/// matches.
 pub fn assert_eq_or_bless(actual: impl AsRef<str>, snapshot_path: impl AsRef<std::path::Path>) {
     assert_eq_or_bless_if(
         actual,
@@ -6,6 +13,9 @@ pub fn assert_eq_or_bless(actual: impl AsRef<str>, snapshot_path: impl AsRef<std
     );
 }
 
+/// Same as [`assert_eq_or_bless`] but allows you to use custom logic to
+/// determine when to bless. Maybe you want to use a different environment
+/// variable, for example.
 pub fn assert_eq_or_bless_if(
     actual: impl AsRef<str>,
     snapshot_path: impl AsRef<std::path::Path>,
