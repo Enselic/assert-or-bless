@@ -8,12 +8,6 @@ curl -H "User-Agent: $USER at $HOST" \
          tar --extract --gzip --to-stdout | less
 ```
 
-### Installation
-
-```
-cargo add --dev assert-or-bless
-```
-
 ### Usage
 
 Write a test:
