@@ -20,13 +20,13 @@ fn check_snapshot() {
 }
 ```
 
-Bless current output (write snapshot file):
+Bless current output (write the snapshot file):
 
 ```sh
 ASSERT_OR_BLESS=bless cargo test
 ```
 
-Assert current output (compare with existing snapshot):
+Assert current output (compare with existing snapshot file):
 
 ```sh
 cargo test
