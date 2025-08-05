@@ -26,14 +26,12 @@ pub fn assert_eq_or_bless_if(
 
     if bless {
         // Write the current public API to the snapshot path
-        std::fs::write(snapshot_path, actual).unwrap_or_else(|err| {
-            panic!("Failed to write snapshot to `{:?}`: {err}", snapshot_path,)
-        });
+        std::fs::write(snapshot_path, actual)
+            .unwrap_or_else(|err| panic!("Writing `{snapshot_path:?}`: {err}"));
     } else {
         // Assert that the current public API matches the snapshot
-        let expected = std::fs::read_to_string(snapshot_path).unwrap_or_else(|err| {
-            panic!("Failed to read snapshot from `{:?}`: {err}", snapshot_path,)
-        });
+        let expected = std::fs::read_to_string(snapshot_path)
+            .unwrap_or_else(|err| panic!("Reading `{snapshot_path:?}`: {err}"));
         similar_asserts::assert_eq!(actual, expected);
     }
 }
@@ -42,18 +40,26 @@ pub fn assert_eq_or_bless_if(
 mod tests {
     use super::*;
 
+    struct DirGuard(std::path::PathBuf);
+    impl DirGuard {
+        fn new(path: std::path::PathBuf) -> Self {
+            std::fs::create_dir_all(&path).unwrap();
+            Self(path)
+        }
+    }
+    impl Drop for DirGuard {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
     fn test_assert_eq(first: &str, second: &str) {
-        let test_dir = std::env::temp_dir()
-            .join(format!("assert-or-bless"))
-            .join(format!("test-{}", fastrand::u32(0..1_000_000_000)));
-
-        std::fs::create_dir_all(&test_dir).unwrap();
-
-        let snapshot_path = test_dir.join("test-snapshot.txt");
+        let dir = DirGuard::new(
+            std::env::temp_dir().join(format!("assert-or-bless-{}", fastrand::u32(0..1_000_000))),
+        );
+        let snapshot_path = dir.0.join("test-snapshot.txt");
         assert_eq_or_bless_if(first, &snapshot_path, true);
         assert_eq_or_bless(second, &snapshot_path);
-
-        let _ = std::fs::remove_dir_all(&test_dir);
     }
 
     #[test]

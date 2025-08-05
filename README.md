@@ -31,3 +31,4 @@ Assert current output (compare with existing snapshot file):
 ```sh
 cargo test
 ```
+
