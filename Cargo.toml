@@ -8,11 +8,14 @@ documentation = "https://docs.rs/assert-or-bless"
 readme = "README.md"
 keywords = ["assert", "bless", "snapshot", "testing"]
 license = "MIT"
-repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
+repository = "https://github.com/Enselic/assert-or-bless"
 
 [dependencies.similar-asserts]
 version = "1.7.0"
 default-features = false
 
 [dev-dependencies]
+# We could use the tempfile crate instead of creating a random directory
+# ourselves, but the Cargo.lock file becomes significantly shorter if we do it
+# ourselves.
 fastrand = "2.3.0"
