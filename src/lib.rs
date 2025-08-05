@@ -50,16 +50,16 @@ mod tests {
     fn assert_eq_succeeds() {
         test_assert_eq(
             "this is the\ncorrect snapshot contents",
-            "this is the\nWRONG snapshot contents",
+            "this is the\ncorrect snapshot contents",
         );
     }
 
     #[test]
     #[should_panic]
-    fn assert_eq_fails() {
+    fn assert_eq_panics() {
         test_assert_eq(
             "this is the\ncorrect snapshot contents",
-            "this is the\ncorrect snapshot contents",
+            "this is the\nWRONG snapshot contents",
         );
     }
 }
