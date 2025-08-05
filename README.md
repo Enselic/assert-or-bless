@@ -1,6 +1,6 @@
 ### Audit the code
 
-This crate is ~30 lines of code. Audit it with the following one-liner, but make sure you follow to the [crates.io Data Access Policy](https://crates.io/data-access):
+This crate is ~30 lines of code. Audit with the following one-liner, but make sure you follow to the [crates.io Data Access Policy](https://crates.io/data-access):
 
 ```sh
 curl -H "User-Agent: $USER at $HOST" \
