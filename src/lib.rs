@@ -33,11 +33,17 @@ mod tests {
     use super::*;
 
     fn test_assert_eq(first: &str, second: &str) {
-        let test_dir = tempfile::tempdir().unwrap();
-        let snapshot_path = test_dir.path().join("test-snapshot.txt");
+        let test_dir = std::env::temp_dir()
+            .join(format!("assert-or-bless"))
+            .join(format!("test-{}", fastrand::u32(0..1_000_000_000)));
 
+        std::fs::create_dir_all(&test_dir).unwrap();
+
+        let snapshot_path = test_dir.join("test-snapshot.txt");
         assert_eq_or_bless_if(first, &snapshot_path, true);
         assert_eq_or_bless(second, &snapshot_path);
+
+        let _ = std::fs::remove_dir_all(&test_dir);
     }
 
     #[test]
