@@ -4,7 +4,7 @@ This crate is ~30 lines of code. Audit with the following one-liner, but make su
 
 ```sh
 curl -H "User-Agent: $USER at $HOST" \
-     -L https://crates.io/api/v1/crates/assert-or-bless/0.1.0/download |
+     -L https://crates.io/api/v1/crates/assert-or-bless/0.1.2/download |
          tar --extract --gzip --to-stdout | less
 ```
 
@@ -15,8 +15,8 @@ Write a test:
 ```rs
 #[test]
 fn check_snapshot() {
-    let output_to_check == "...";
-    assert_or_bless::assert_eq_or_bless(output_to_check, "snapshot.txt");
+    let actual == "...";
+    assert_or_bless::assert_eq_or_bless(actual, "snapshot.txt");
 }
 ```
 

@@ -25,11 +25,9 @@ pub fn assert_eq_or_bless_if(
     let actual = actual.as_ref();
 
     if bless {
-        // Write the current public API to the snapshot path
         std::fs::write(snapshot_path, actual)
             .unwrap_or_else(|err| panic!("Writing `{snapshot_path:?}`: {err}"));
     } else {
-        // Assert that the current public API matches the snapshot
         let expected = std::fs::read_to_string(snapshot_path)
             .unwrap_or_else(|err| panic!("Reading `{snapshot_path:?}`: {err}"));
         similar_asserts::assert_eq!(actual, expected);

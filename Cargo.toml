@@ -1,7 +1,7 @@
 [package]
 edition = "2024"
 name = "assert-or-bless"
-version = "0.1.1"
+version = "0.1.2" # Keep in sync with README.md audit command
 description = "Assert that a multi-line string equals the contents of a blessable snapshot file. Print a nice colored diff if not."
 homepage = "https://github.com/Enselic/assert-or-bless"
 documentation = "https://docs.rs/assert-or-bless"
