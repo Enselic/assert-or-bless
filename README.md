@@ -1,18 +1,22 @@
-## Audit the code
+### Audit the code
 
 This crate is ~30 lines of code. Audit it with the following one-liner, but make sure you follow to the [crates.io Data Access Policy](https://crates.io/data-access):
 
 ```sh
-curl -H "User-Agent: $USER at $HOST" -L https://crates.io/api/v1/crates/assert-or-bless/0.1.0/download | tar --extract --gzip --to-stdout | less
+curl \
+    -H "User-Agent: $USER at $HOST" \
+    -L https://crates.io/api/v1/crates/assert-or-bless/0.1.0/download |
+tar --extract --gzip --to-stdout |
+less
 ```
 
-## Installation
+### Installation
 
 ```
 cargo add --dev assert-or-bless
 ```
 
-## Usage
+### Usage
 
 Write a test:
 
