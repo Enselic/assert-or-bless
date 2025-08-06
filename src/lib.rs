@@ -5,15 +5,22 @@
 /// `value` will be written to `snapshot_file` instead of being asserted to
 /// match.
 pub fn assert_eq_or_update(value: impl AsRef<str>, snapshot_path: impl AsRef<std::path::Path>) {
-    let update =
-        std::env::var("UPDATE_SNAPSHOTS").map_or(false, |s| s == "1" || s == "yes" || s == "true");
+    let value = value.as_ref();
+    let snapshot_path = snapshot_path.as_ref();
 
-    if update {
-        std::fs::write(&snapshot_path, value.as_ref())
-            .unwrap_or_else(|e| panic!("Error writing `{:?}`: {e}", snapshot_path.as_ref()));
+    if update_snapshots() {
+        std::fs::write(&snapshot_path, value)
+            .unwrap_or_else(|e| panic!("Error writing `{snapshot_path:?}`: {e}"));
     } else {
         let snapshot = std::fs::read_to_string(&snapshot_path)
-            .unwrap_or_else(|e| panic!("Error reading `{:?}`: {e}", snapshot_path.as_ref()));
+            .unwrap_or_else(|e| panic!("Error reading `{snapshot_path:?}`: {e}"));
+
         similar_asserts::assert_eq!(value.as_ref(), snapshot);
     }
+}
+
+fn update_snapshots() -> bool {
+    std::env::var("UPDATE_SNAPSHOTS")
+        .map(|s| s.to_lowercase())
+        .is_ok_and(|s| s == "1" || s == "yes" || s == "true")
 }
