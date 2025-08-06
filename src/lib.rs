@@ -2,20 +2,8 @@
 /// there is a diff the function will panic with a helpful diff that shows what
 /// changed.
 ///
-/// If the env var `ASSERT_OR_BLESS` is set to `bless` then `actual` will be
-/// written to the snapshot file at `snapshot_path` instead of asserting that it
-/// matches.
-pub fn assert_eq_or_bless(actual: impl AsRef<str>, snapshot_path: impl AsRef<std::path::Path>) {
-    assert_eq_or_bless_if(
-        actual,
-        snapshot_path,
-        std::env::var("ASSERT_OR_BLESS") == Ok("bless".to_string()),
-    );
-}
-
-/// Same as [`assert_eq_or_bless`] but allows you to use custom logic to
-/// determine when to bless. Maybe you want to use a different environment
-/// variable, for example.
+/// If `bless` is `true` then `actual` will be written to the snapshot file at
+/// `snapshot_path` instead of asserting that it matches.
 pub fn assert_eq_or_bless_if(
     actual: impl AsRef<str>,
     snapshot_path: impl AsRef<std::path::Path>,
@@ -32,6 +20,25 @@ pub fn assert_eq_or_bless_if(
             .unwrap_or_else(|err| panic!("Reading `{snapshot_path:?}`: {err}"));
         similar_asserts::assert_eq!(actual, expected);
     }
+}
+
+/// Same as [`assert_eq_or_bless_if`] but allows you to use an environment
+/// variable to determine when to bless.
+///
+/// If the environment variable named `env_var_name` is set to `1`, `yes` or
+/// `true` then `actual` will be written to the snapshot file at `snapshot_path`
+/// instead of asserting that it matches with `actual`.
+pub fn assert_eq_or_bless_with_env_var(
+    actual: impl AsRef<str>,
+    snapshot_path: impl AsRef<std::path::Path>,
+    env_var_name: impl AsRef<str>,
+) {
+    assert_eq_or_bless_if(
+        actual,
+        snapshot_path,
+        std::env::var(env_var_name.as_ref())
+            .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
+    );
 }
 
 #[cfg(test)]
@@ -51,13 +58,21 @@ mod tests {
         }
     }
 
+    pub fn bless(actual: impl AsRef<str>, snapshot_path: impl AsRef<std::path::Path>) {
+        assert_eq_or_bless_if(actual, snapshot_path, true);
+    }
+
+    pub fn assert_eq(actual: impl AsRef<str>, snapshot_path: impl AsRef<std::path::Path>) {
+        assert_eq_or_bless_if(actual, snapshot_path, false);
+    }
+
     fn test_assert_eq(first: &str, second: &str) {
         let dir = DirGuard::new(
             std::env::temp_dir().join(format!("assert-or-bless-{}", fastrand::u32(0..1_000_000))),
         );
         let snapshot_path = dir.0.join("test-snapshot.txt");
-        assert_eq_or_bless_if(first, &snapshot_path, true);
-        assert_eq_or_bless(second, &snapshot_path);
+        bless(first, &snapshot_path);
+        assert_eq(second, &snapshot_path);
     }
 
     #[test]
