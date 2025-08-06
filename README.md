@@ -13,7 +13,7 @@ fn check_snapshot() {
 Update the snapshot file before the first test:
 
 ```sh
-UPDATE_SNAPSHOTS cargo test
+UPDATE_SNAPSHOTS=yes cargo test
 ```
 
 Assert that current contents matches the contents of the snapshot file:
