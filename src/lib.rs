@@ -36,8 +36,7 @@ pub fn assert_eq_or_bless_with_env_var(
     assert_eq_or_bless_if(
         actual,
         snapshot_path,
-        std::env::var(env_var_name.as_ref())
-            .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
+        std::env::var(env_var_name.as_ref()).is_ok_and(|s| s == "1" || s == "yes" || s == "true"),
     );
 }
 
